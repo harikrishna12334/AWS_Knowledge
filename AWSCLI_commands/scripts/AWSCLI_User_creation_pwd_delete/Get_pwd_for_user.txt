@@ -1,0 +1,1 @@
+aws iam get-login-profile --user-name admin

@@ -1,0 +1,1 @@
+aws iam delete-access-key --access-key AKIAUIU7WTFTMGXEI4XS --user-name uat

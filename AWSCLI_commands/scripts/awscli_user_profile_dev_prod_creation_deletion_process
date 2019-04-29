@@ -1,0 +1,219 @@
+https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_admin-change-user.html#Using_ManagingPasswordsCLIAPI
+https://docs.aws.amazon.com/cli/latest/userguide/cli-services-s3-commands.html
+https://docs.aws.amazon.com/cli/latest/userguide/cli-services-iam-new-user-group.html
+
+
+aws iam create-user --user-name admin
+aws iam get-login-profile --user-name admin
+
+user : prod	
+pwd  : prod@123
+AK   : AKIAUIU7WTFTBG45CK6F
+SAK  : 4SZJ50v+3U+/+D201AS1rEUB5aaMvCDzZxzlrXBM
+
+user : dev
+pwd  : dev@123
+AK   :  AKIAUIU7WTFTGWN6FAIQ  
+SAK  : AOmb3jkPdbHK+Eh2YZBIS4Fy7gueU9orRJjqxdGL
+
+user : test
+pwd  : test@123
+AK   : AKIAUIU7WTFTIWWOIP4V
+SAK  : iStW11Dx818eUxXymW2qnC0OIV8dQISAth24quI/
+
+
+aws iam create-user --user-name prod
+aws iam create-user --user-name dev
+aws iam delete-user --user-name prod
+aws iam delete-user --user-name dev
+
+aws iam create-login-profile --user-name prod --password prod@123 --password-reset-required
+aws iam create-login-profile --user-name uat --password uat@123 --password-reset-required 
+aws iam get-login-profile --user-name dev
+aws iam get-login-profile --user-name prod
+aws iam update-login-profile --user-name dev --password dev@123
+aws iam update-login-profile --user-name prod --password prod@123
+aws iam delete-login-profile --user-name prod
+aws iam delete-login-profile --user-name dev
+
+aws iam create-access-key --user-name prod
+aws iam delete-access-key --access-key AKIAUIU7WTFTMGXEI4XS --user-name prod
+
+aws iam create-access-key --user-name uat
+aws iam delete-access-key --access-key AKIAUIU7WTFTONUF4YKR --user-name dev
+====================================================================
+aws iam create-user --user-name dev
+aws iam create-login-profile --user-name dev --password dev@123 --password-reset-required
+aws iam create-access-key --user-name dev
+
+password change :
+aws iam update-login-profile --user-name Bob --password dev@@122
+
+=================================================================================================================================================================
+aws iam create-user --user-name dev
+aws iam create-login-profile --user-name dev --password dev@123 --password-reset-required
+aws iam create-access-key --user-name dev
+
+aws iam create-login-profile --user-name test --password test@123 --password-reset-required & aws iam create-access-key --user-name test
+aws iam delete-access-key --access-key AKIAUIU7WTFTIWWOIP4V --user-name test
+aws iam delete-login-profile --user-name test
+aws iam delete-user --user-name test
+
+=================================================================================================================================================================
+cofigure multiple profiles like -- dev & prod 
+
+aws configure --profile prod
+aws configure --profile dev
+
+Switching Between Different AWS Profile using –profile Option
+
+default profile
+aws ec2 describe-volumes  or   aws ec2 describe-volumes --profile default
+aws ec2 describe-volumes --profile dev
+aws ec2 describe-volumes --profile prod
+
+
+==================================================================
+
+Switching Between Different AWS Profiles using AWS_PROFILE Env Variable
+
+export AWS_PROFILE=dev
+
+
+
+Note:  The following commands will use dev profile credentials (not the default credentials), as we’ve set the AWS_PROFILE to dev.
+
+aws ec2 describe-volumes
+aws ec2 describe-instances
+aws s3 ls
+
+Switch to Prod profile
+
+export AWS_PROFILE=prod
+
+aws ec2 describe-volumes
+aws ec2 describe-instances
+aws s3 ls
+
+================================================
+
+Switch to default profile
+
+
+2 ways   ---  unset profile  & export AWS_PROFILE=default  
+
+Once you’ve set to either dev or prod, and if you want to connect to the AWS account that points to the default profile, you have two options.
+
+You can set AWS_PROFILE to default as shown below.
+
+export AWS_PROFILE=default
+Or, you can simply unset the AWS_PROFILE environment variable, which will then automatically start using the default profile.
+
+unset AWS_PROFILE
+After the above, the following commands will use default profile credentials to connect to your AWS-prod account.
+
+aws ec2 describe-volumes
+aws ec2 describe-instances
+aws s3 ls
+..
+
+================================================
+
+View Profile Information using list Option
+
+cat ~/.aws/config
+
+cat ~/.aws/credentials
+
+===========
+current profile information
+
+aws configure list
+
+
+You can also pass the profile name to view profile information without changing your current profile as shown below.
+
+aws configure list --profile dev
+aws configure list --profile prod
+==============
+Change Default Config and Credentials FileName and Location
+
+export AWS_SHARED_CREDENTIALS_FILE=/c/Users/Administrator.DESKTOP-C9E863I/.awscustom
+
+export AWS_CONFIG_FILE=/c/Users/Administrator.DESKTOP-C9E863I/.awscustom
+
+===============
+export AWS_SHARED_CREDENTIALS_FILE=/c/Users/Administrator.DESKTOP-C9E863I/.aws
+
+export AWS_CONFIG_FILE=/c/Users/Administrator.DESKTOP-C9E863I/.aws
+
+
+$ cat config
+[default]
+output = text
+region = us-east-2
+[profile dev]
+output = text
+region = us-east-2
+
+$ cat credentials
+[default]
+aws_access_key_id = AKIAUIU7WTFTEGMELLP6
+aws_secret_access_key = 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
+[dev]
+aws_access_key_id = AKIAUIU7WTFTOSS2R5BF
+aws_secret_access_key = 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
+
+
+====================================
+
+View a Specific Profile Parameter Value using get Option
+
+aws configure get varname [--profile profile-name]
+
+aws configure get aws_access_key_id
+
+aws configure get aws_access_key_id
+aws configure get aws_secret_access_key
+aws configure get region
+aws configure get output
+
+aws configure get dev.aws_secret_access_key
+aws configure get prod.aws_secret_access_key
+
+
+=====================================
+
+Set a Specific Profile Parameter Value using set Option
+
+aws configure set varname value [--profile profile-name]
+
+aws configure set region us-east-2
+
+
+
+aws configure set aws_access_key_id NEWABBCCCDDDEEEFPNEW
+aws configure set aws_secret_access_key newdbbcccdddeeefffggghhhiiijjjkkklllpnew
+aws configure set region us-east-2
+aws configure set output json
+
+
+aws configure set dev.region us-east-2
+aws configure set prod.output json
+
+
+============================================================================================================================================================
+
+Group
+
+aws iam create-group --group-name dev
+aws iam add-user-to-group --user-name dev --group-name dev
+
+aws iam create-group --group-name prod
+aws iam add-user-to-group --user-name prod --group-name prod
+
+
+aws iam create-group --group-name test
+aws iam create-user  -user-name test
+aws iam add-user-to-group --group-name test --user-name test 
+aws iam get-group --group-name test

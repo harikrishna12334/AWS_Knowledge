@@ -1,0 +1,154 @@
+aws ec2 create-vpc --cidr-block 10.0.0.0/16
+aws ec2 describe-vpcs --vpc-ids vpc-0e43ab306bf7f40de
+aws ec2 delete-vpc --vpc-id vpc-0e43ab306bf7f40de
+
+aws ec2 create-subnet --vpc-id vpc-0e43ab306bf7f40de --cidr-block 10.0.1.0/24
+aws ec2 create-subnet --vpc-id vpc-0e43ab306bf7f40de --cidr-block 10.0.2.0/24
+aws ec2 create-subnet --vpc-id vpc-0e43ab306bf7f40de --cidr-block 10.0.3.0/24
+
+aws ec2 describe-subnets --subnet-id subnet-subnet-0c0f0a04f43fedf15
+aws ec2 describe-subnets --subnet-id subnet-0d728cb8d9df41484 
+aws ec2 describe-subnets --subnet-id subnet-09eec60620fefc5e1
+
+aws ec2 modify-subnet-attribute --subnet-id subnet-0c0f0a04f43fedf15 --map-public-ip-on-launch
+aws ec2 modify-subnet-attribute --subnet-id subnet-09eec60620fefc5e1 --map-public-ip-on-launch
+
+
+aws ec2 create-internet-gateway    ## igw-0a517fa165df35a1b
+aws ec2 attach-internet-gateway --vpc-id vpc-0e43ab306bf7f40de --internet-gateway-id igw-0a517fa165df35a1b
+
+aws ec2 create-route-table --vpc-id vpc-0e43ab306bf7f40de   ##rtb-0060927b281dbf986
+aws ec2 create-route --route-table-id rtb-0060927b281dbf986 --destination-cidr-block 0.0.0.0/0 --gateway-id igw-0a517fa165df35a1b
+aws ec2 describe-route-tables --route-table-id rtb-0060927b281dbf986
+
+aws ec2 associate-route-table  --subnet-id subnet-subnet-0c0f0a04f43fedf15 --route-table-id rtb-0060927b281dbf986    ##rtbassoc-019fe76f2526c4124
+
+aws ec2 create-key-pair --key-name buykey --query 'KeyMaterial' --output text > /d/Krishna/AWS/key_pairs/buykey.pem
+aws ec2 describe-key-pairs --key-name buykey
+aws ec2 delete-key-pair --key-name buykey
+
+aws ec2 create-security-group --group-name SSHAccess --description "Security group for SSH access" --vpc-id vpc-0e43ab306bf7f40de   ##sg-030c7e1b189e7955c
+
+aws ec2 authorize-security-group-ingress --group-id sg-030c7e1b189e7955c --protocol tcp --port 22 --cidr 0.0.0.0/0
+
+================================================================================================================================================================
+Lunch Instance:
+
+aws ec2 run-instances --image-id ami-02bcbb802e03574ba --count 1 --instance-type t2.micro --key-name buykey --security-group-ids sg-030c7e1b189e7955c --subnet-id subnet-0d728cb8d9df41484
+
+aws ec2 run-instances --image-id ami-02bcbb802e03574ba --count 2 --instance-type t2.micro --key-name buykey --security-group-ids sg-030c7e1b189e7955c --subnet-id subnet-0d728cb8d9df41484
+
+aws ec2 describe-instance-status --instance-id i-07e2d7bcb664c1d83
+aws ec2 describe-instance-status  --instance-id i-0ce30f0022dfe980e
+
+aws ec2 stop-instances --instance-ids i-0ce30f0022dfe980e
+aws ec2 start-instances --instance-ids i-0ce30f0022dfe980e
+aws ec2 terminate-instances --instance-ids i-0ce30f0022dfe980e
+aws ec2 terminate-instances --instance-ids i-00dde0b2e14576b62
+aws ec2 reboot-instances --instance-id i-0ce30f0022dfe980e
+
+aws ec2 describe-instance-status  --instance-id i-0ce30f0022dfe980e
+
+================================================================================================================================================================
+resize a volume in AWS EC2
+
+lsblk 
+file -s /dev/xvdf 
+mkfs -t ext4  /dev/xvdf
+mkdir /newstorage
+mount /dev/xvdf /newstorage/
+df -hT
+
+vi /etc/fstab
+
+/dev/xvdf /newstorage/ ext4 default,nofail, 0 0
+mount -a 
+
+
+https://www.youtube.com/watch?v=HPXnXkBzIHw
+
+
+
+aws ec2 modify-volume --region <regionName> --volume-id <volumeId> --size <newSize> --volume-type <newType> --iops <newIops>
+aws ec2 describe-volumes-modifications --volume <volumeId> --region <region>
+
+aws ec2 modify-volume --region us-east-2a --volume-id <volumeId> --size <newSize> --volume-type <newType> --iops <newIops>
+
+===============================================================================================================================================================
+
+elb
+
+
+aws elb describe-load-balancers
+aws elb describe-load-balancers --load-balancer-name my-load-balancer
+
+
+
+
+=============================================================================================================================================================
+All instance delte
+
+aws ec2 terminate-instances 
+        --instance-ids 
+         $(
+          aws ec2 describe-instances 
+            | grep InstanceId 
+            | awk {'print $2'} 
+            | sed 's/[",]//g'
+          )
+		  
+=======================================
+
+aws ec2 terminate-instances --instance-ids $( aws ec2 describe-instances | grep InstanceId | awk {'print $2'} | sed 's/[",]//g' )
+
+aws ec2 terminate-instances --instance-ids $(aws ec2 describe-instances --filters  "Name=instance-state-name,Values=pending,running,stopped,stopping" --query "Reservations[].Instances[].[InstanceId]" --output text | tr '\n' ' ')
+
+aws ec2 describe-instances --filters  "Name=instance-state-name,Values=pending,running,stopped,stopping" --query "Reservations[].Instances[].[InstanceId]" --output text  |  xargs --delimiter '\n' --max-args=1 aws ec2   modify-instance-attribute  --no-disable-api-termination --instance-id	
+
+=================================================
+
+find the public ip
+
+aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --output=text	  
+aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --output table
+aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --output json
+
+
+
+==============================================================================================================================================================
+
+kubernets setup:
+
+
+aws ec2 run-instances --image-id ami-02bcbb802e03574ba --count 1 --instance-type t2.micro --key-name buykey --security-group-ids sg-030c7e1b189e7955c --subnet-id subnet-0d728cb8d9df41484
+
+aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --output table
+
+ssh -i buykey.pem ec2-user@
+
+curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+
+==============================================================================================================================================================
+
+aws route53 create-hosted-zone --name example.com --caller-reference 2014-04-01-18:47 --hosted-zone-config Comment="command-line version"
+aws route53 create-hosted-zone --name buy.com --caller-reference 2019-04-17-08:05 --hosted-zone-config Comment="command-line version"
+
+aws route53 delete-hosted-zone --id Z36KTIQEXAMPLE
+
+aws route53 list-hosted-zones-by-name
+
+
+The following command lists hosted zones ordered by name, beginning with www.example.com:
+
+aws route53 list-hosted-zones-by-name --dns-name www.example.com
+
+how can i get/fetch hosted id
+
+aws route53 list-hosted-zones --query 'HostedZones[Name==`'${buy.com}'.`].Id' --output text
+
+
+aws route53 list-hosted-zones --max-items 1 --starting-token Z3M3LMPEXAMPLE
+
+aws route53 list-hosted-zones --max-items 1
+
+aws route53 list-hosted-zones –output text|grep -w buy.com.|awk ‘{print $3,$4}’
