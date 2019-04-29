@@ -1,0 +1,22 @@
+
+
+git clone https://github.com/harikrishna12334/AWS_Knowledge.git
+
+or
+
+create directory -- AWS_Knowledge
+
+cd AWS_Knowledge
+
+git init  # initialize local repo   i.e  directoy become git repo
+
+======================
+
+
+staging area   # we will add all files in staging ares
+
+
+command:
+
+git add . 
+
