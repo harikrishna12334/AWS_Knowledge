@@ -424,3 +424,36 @@ yum -y install ntp
 systemctl start ntpd
 
 systemctl enable ntpd ntpq -p
+
+
+=============================================================================================================
+
+
+sudo yum update -y
+sudo yum install -y docker
+sudo service docker start
+Yum packages
+rpm -qa | grep openjdk
+sudo yum remove  java-1.6.0-openjdk-1.6.0.0-66.1.13.1.62.amzn1.x86_64
+sudo yum install java-1.7.0-openjdk.x86_64
+ 
+sudo yum install nginx.x86_64
+Download and install
+http://nexus.sonatype.org/using/download.html
+http://books.sonatype.com/nexus-book/reference/install.html
+sudo adduser nexus
+wget www.sonatype.org/downloads/nexus-2.11.2-03-bundle.tar.gz
+wget http://www.sonatype.org/downloads/nexus-latest-bundle.tar.gz
+tar xvzf nexus-2.11.2-03-bundle.tar.gz
+sudo mv nexus-2.11.2-03 /opt/
+sudo ln -s nexus-2.11.2-03/ nexus 
+sudo mv sonatype-work /data/
+sudo chown nexus:nexus nexus-2.11.2-03 -R 
+sudo chown nexus:nexus /data -R 
+cd /opt 
+sudo ln -s /data/sonatype-work sonatype-work
+Set up as service
+sudo cp nexus/bin/nexus /etc/init.d/nexus
+sudo update-rc.d nexus defaults
+sudo service nexus start
+tail -200f /data/sonatype-work/nexus/logs/nexus.log 
