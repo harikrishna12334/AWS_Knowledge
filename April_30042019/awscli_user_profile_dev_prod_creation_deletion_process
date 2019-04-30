@@ -470,3 +470,10 @@ sudo adduser nexus
 visudo
 passwd nexus  # nexus123
 chmod -R nexus:nexus /opt/nexus 
+
+
+===================================================
+
+nexus setup link
+
+http://bhamail.github.io/pinexus/nexussetup.html
