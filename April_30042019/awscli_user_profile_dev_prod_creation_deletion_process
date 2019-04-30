@@ -560,3 +560,10 @@ vi pom.xml
 <name>Snapshots</name>
 <url>http://10.200.0.16:8081/nexus/content/repositories/releases/</url>
 </snapshotRepository>
+
+
+=====================================================
+
+nexus install in windows
+
+https://www.sonatype.com/download-osss-sonatype
