@@ -1,0 +1,426 @@
+https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_admin-change-user.html#Using_ManagingPasswordsCLIAPI
+https://docs.aws.amazon.com/cli/latest/userguide/cli-services-s3-commands.html
+https://docs.aws.amazon.com/cli/latest/userguide/cli-services-iam-new-user-group.html
+
+
+aws iam create-user --user-name admin
+aws iam get-login-profile --user-name admin
+
+user : prod	
+pwd  : prod@123
+AK   : AKIAUIU7WTFTBG45CK6F
+SAK  : 4SZJ50v+3U+/+D201AS1rEUB5aaMvCDzZxzlrXBM
+
+user : dev
+pwd  : dev@123
+AK   :  AKIAUIU7WTFTGWN6FAIQ  
+SAK  : AOmb3jkPdbHK+Eh2YZBIS4Fy7gueU9orRJjqxdGL
+
+user : test
+pwd  : test@123
+AK   : AKIAUIU7WTFTIWWOIP4V
+SAK  : iStW11Dx818eUxXymW2qnC0OIV8dQISAth24quI/
+
+
+aws iam create-user --user-name prod
+aws iam create-user --user-name dev
+aws iam delete-user --user-name prod
+aws iam delete-user --user-name dev
+
+aws iam create-login-profile --user-name prod --password prod@123 --password-reset-required
+aws iam create-login-profile --user-name uat --password uat@123 --password-reset-required 
+aws iam get-login-profile --user-name dev
+aws iam get-login-profile --user-name prod
+aws iam update-login-profile --user-name dev --password dev@123
+aws iam update-login-profile --user-name prod --password prod@123
+aws iam delete-login-profile --user-name prod
+aws iam delete-login-profile --user-name dev
+
+aws iam create-access-key --user-name prod
+aws iam delete-access-key --access-key AKIAUIU7WTFTMGXEI4XS --user-name prod
+
+aws iam create-access-key --user-name uat
+aws iam delete-access-key --access-key AKIAUIU7WTFTONUF4YKR --user-name dev
+====================================================================
+aws iam create-user --user-name dev
+aws iam create-login-profile --user-name dev --password dev@123 --password-reset-required
+aws iam create-access-key --user-name dev
+
+password change :
+aws iam update-login-profile --user-name Bob --password dev@@122
+
+=================================================================================================================================================================
+aws iam create-user --user-name dev
+aws iam create-login-profile --user-name dev --password dev@123 --password-reset-required
+aws iam create-access-key --user-name dev
+
+aws iam create-login-profile --user-name test --password test@123 --password-reset-required & aws iam create-access-key --user-name test
+aws iam delete-access-key --access-key AKIAUIU7WTFTIWWOIP4V --user-name test
+aws iam delete-login-profile --user-name test
+aws iam delete-user --user-name test
+
+=================================================================================================================================================================
+cofigure multiple profiles like -- dev & prod 
+
+aws configure --profile prod
+aws configure --profile dev
+
+Switching Between Different AWS Profile using –profile Option
+
+default profile
+aws ec2 describe-volumes  or   aws ec2 describe-volumes --profile default
+aws ec2 describe-volumes --profile dev
+aws ec2 describe-volumes --profile prod
+
+
+==================================================================
+
+Switching Between Different AWS Profiles using AWS_PROFILE Env Variable
+
+export AWS_PROFILE=dev
+
+
+
+Note:  The following commands will use dev profile credentials (not the default credentials), as we’ve set the AWS_PROFILE to dev.
+
+aws ec2 describe-volumes
+aws ec2 describe-instances
+aws s3 ls
+
+Switch to Prod profile
+
+export AWS_PROFILE=prod
+
+aws ec2 describe-volumes
+aws ec2 describe-instances
+aws s3 ls
+
+================================================
+
+Switch to default profile
+
+
+2 ways   ---  unset profile  & export AWS_PROFILE=default  
+
+Once you’ve set to either dev or prod, and if you want to connect to the AWS account that points to the default profile, you have two options.
+
+You can set AWS_PROFILE to default as shown below.
+
+export AWS_PROFILE=default
+Or, you can simply unset the AWS_PROFILE environment variable, which will then automatically start using the default profile.
+
+unset AWS_PROFILE
+After the above, the following commands will use default profile credentials to connect to your AWS-prod account.
+
+aws ec2 describe-volumes
+aws ec2 describe-instances
+aws s3 ls
+..
+
+================================================
+
+View Profile Information using list Option
+
+cat ~/.aws/config
+
+cat ~/.aws/credentials
+
+===========
+current profile information
+
+aws configure list
+
+
+You can also pass the profile name to view profile information without changing your current profile as shown below.
+
+aws configure list --profile dev
+aws configure list --profile prod
+==============
+Change Default Config and Credentials FileName and Location
+
+export AWS_SHARED_CREDENTIALS_FILE=/c/Users/Administrator.DESKTOP-C9E863I/.awscustom
+
+export AWS_CONFIG_FILE=/c/Users/Administrator.DESKTOP-C9E863I/.awscustom
+
+===============
+export AWS_SHARED_CREDENTIALS_FILE=/c/Users/Administrator.DESKTOP-C9E863I/.aws
+
+export AWS_CONFIG_FILE=/c/Users/Administrator.DESKTOP-C9E863I/.aws
+
+
+$ cat config
+[default]
+output = text
+region = us-east-2
+[profile dev]
+output = text
+region = us-east-2
+
+$ cat credentials
+[default]
+aws_access_key_id = AKIAUIU7WTFTEGMELLP6
+aws_secret_access_key = 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
+[dev]
+aws_access_key_id = AKIAUIU7WTFTOSS2R5BF
+aws_secret_access_key = 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
+
+
+====================================
+
+View a Specific Profile Parameter Value using get Option
+
+aws configure get varname [--profile profile-name]
+
+aws configure get aws_access_key_id
+
+aws configure get aws_access_key_id
+aws configure get aws_secret_access_key
+aws configure get region
+aws configure get output
+
+aws configure get dev.aws_secret_access_key
+aws configure get prod.aws_secret_access_key
+
+
+=====================================
+
+Set a Specific Profile Parameter Value using set Option
+
+aws configure set varname value [--profile profile-name]
+
+aws configure set region us-east-2
+
+
+
+aws configure set aws_access_key_id NEWABBCCCDDDEEEFPNEW
+aws configure set aws_secret_access_key newdbbcccdddeeefffggghhhiiijjjkkklllpnew
+aws configure set region us-east-2
+aws configure set output json
+
+
+aws configure set dev.region us-east-2
+aws configure set prod.output json
+
+
+============================================================================================================================================================
+
+Group
+
+aws iam create-group --group-name dev
+aws iam add-user-to-group --user-name dev --group-name dev
+
+aws iam create-group --group-name prod
+aws iam add-user-to-group --user-name prod --group-name prod
+
+
+aws iam create-group --group-name test
+aws iam create-user  -user-name test
+aws iam add-user-to-group --group-name test --user-name test 
+aws iam get-group --group-name test
+
+aws iam remove-user-from-group --user-name Bob --group-name Admins
+aws iam remove-user-from-group --user-name test --group-name test
+
+
+==========================================================================================================================================================
+
+EC2 Resize 
+
+lsblk
+fdisk -l
+file -s  /dev/xvdf
+
+mkfs -t ext4 /dev/xvdf   ## create filesystem
+
+
+mkdir /Binary
+mount /dev/xvdf /Binary
+
+df -h 
+
+
+vi /etc/fstab
+
+/dev/xvdf /Binary ext4 defaults,nofail, 0 0
+
+mount -a
+
+df -hT  
+
+===========================
+
+share folder b/w AWS EC2  & Local machine using SSHFS
+
+sudo sshfs ubuntu@192.168.12.13:/home/ubuntu/aws_share /home/melvin/local_sh1 -o IdentityFile=~/melvin-main.pem -o allow_other
+sudo sshfs ubuntu@192.168.12.13:/home/ubuntu/aws_share /d/Krishna/local_sh1 -o IdentityFile=~/melvin-main.pem -o allow_other
+
+sudo umount -f /home/melvin/local_sh1
+
+
+===========================================
+
+
+
+18.188.95.1
+
+
+
+rds.cas8uhfe2r8z.us-east-2.rds.amazonaws.com
+
+13.58.246.142
+
+
+=============================================
+mysql -h rds.cas8uhfe2r8z.us-east-2.rds.amazonaws.com -P 3306 -u master -p 
+ 
+prompt: masteruser
+
+
+
+============
+show databases;
+use rds   ##database changed 
+
+=============
+ 
+
+create table iciciAMS (name VARCHAR(30), batch INT(2), phone VARCHAR(10), email VARCHAR(30));
+insert into iciciAMS values('harikrishna',3,'7400215211','harikrishna1233@gmail.com')
+select * from iciciAMS;
+
+
+SHOW VARIABLES LIKE 'max_connections';
+
+SELECT @@max_connections;
+SHOW STATUS WHERE `variable_name` = 'Threads_connected';
+
+netstat -n |grep 3306|grep ESTABLISHED|wc -l
+
+SHOW PROCESSLIST;
+SHOW FULL PROCESSLIST;
+
+
+cmsuat
+
+cmsuat123  # master username 
+
+mysql -h cmsuat.cas8uhfe2r8z.us-east-2.rds.amazonaws.com -P 3306 -u cmsuat123 -p 
+
+
+
+
+aws rds generate-db-auth-token --hostname cmsuat.cas8uhfe2r8z.us-east-2.rds.amazonaws.com --port 3306 --region us-east-2 --username cmsuat123 
+
+mysql --host=cmsuat.cas8uhfe2r8z.us-east-2.rds.amazonaws.com --port=3306 --ssl-ca=/d/Krishna/AWS/RDS/RDS.pem --enable-cleartext-plugin --user=cmsuat123 --password=cmsuat123
+
+
+
+18.215.161.138
+54.234.18.163
+
+================================
+
+Jenkins installatin process in ec2
+
+yum update -y
+yum install java-1.8*
+yum install java-1.8.0-openjdk -y 
+
+vi .bash_profiles
+
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.201.b09-0.amzn2.x86_64
+sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins.io/redhat/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
+
+sudo yum install jenkins -y
+sudo service jenkins start                       
+
+If you want Jenkins to automatically start when your instance is started, we can use chkconfig to add Jenkins to our startup services.
+sudo chkconfig --add jenkins
+
+username:  jenkinsuser
+pwd     : jenkinsuser123 
+
+http://18.215.161.138:8080/
+
+
+
+
+
+ find / -name javac
+ 
+ ==================
+ 
+ maven install
+ 
+ website:  https://maven.apache.org/download.cgi
+ 
+ mkdir -P /opt/maven/
+ 
+ wget http://mirrors.estointernet.in/apache/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.tar.gz
+ 
+ tar -xvf apache-maven-3.6.1.-bin.tar.gz 
+ 
+ https://github.com/arsr319/maven-hello-world.git 
+ 
+ 
+ 
+ 
+ ==================================================================================================================
+ 
+ linux service
+ 
+ 
+ 
+ Running Nexus As A Service
+It is better to have a init.d entry to manage nexus service using the Linux service command. Follow the steps given below for the setup.
+
+Step 1: Create a symbolic link for nexus service script to /etc/init.d folder.
+
+sudo ln -s /app/nexus/bin/nexus /etc/init.d/nexus
+1
+sudo ln -s /app/nexus/bin/nexus /etc/init.d/nexus
+Step 2: Execute the following commands to add nexus service to boot.
+
+
+sudo chkconfig --add nexus
+
+sudo chkconfig --levels 345 nexus on
+
+sudo service nexus start
+
+ln -s /opt/nexus/nexus/bin/nexus /etc/init.d/nexus
+
+
+cd /etc/init.d
+sudo chkconfig --add nexus
+sudo chkconfig --levels 345 nexus on
+sudo service nexus start
+
+
+sudo /sbin/chkconfig nexus on
+sudo systemctl enable nexus  docker 
+
+===============================
+
+I am guessing its centos 7
+
+Install the iptables-services package:
+
+yum install iptables-services
+
+systemctl start iptables
+
+systemctl [stop|start|restart] iptables
+
+Saving your firewall rules can be done as follows:
+
+service iptables save
+
+NTPD
+
+yum -y install ntp
+
+systemctl start ntpd
+
+systemctl enable ntpd ntpq -p
