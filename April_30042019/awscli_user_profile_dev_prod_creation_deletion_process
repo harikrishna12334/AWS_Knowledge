@@ -477,3 +477,28 @@ chmod -R nexus:nexus /opt/nexus
 nexus setup link
 
 http://bhamail.github.io/pinexus/nexussetup.html
+
+
+
+================================================
+
+
+linux root volumes resize  8GB to 16GB
+
+lsblk 
+lsblk -lf
+
+
+sudo file -s /dev/xvd*
+
+sudo resize2fs /dev/xvda1
+
+
+
+aws ec2 modify-volume --volume-id vol-0esdf88weg --size 12
+
+aws ec2 describe-volumes-modifications --volume-id vol-0esdf88weg
+
+Increase Ec3 root volume withour reboot or downtime website Link
+
+https://www.youtube.com/watch?v=3SMn0zUmkyE
