@@ -457,3 +457,16 @@ sudo cp nexus/bin/nexus /etc/init.d/nexus
 sudo update-rc.d nexus defaults
 sudo service nexus start
 tail -200f /data/sonatype-work/nexus/logs/nexus.log 
+
+
+
+==================================================
+
+
+nexus
+
+
+sudo adduser nexus
+visudo
+passwd nexus  # nexus123
+chmod -R nexus:nexus /opt/nexus 
