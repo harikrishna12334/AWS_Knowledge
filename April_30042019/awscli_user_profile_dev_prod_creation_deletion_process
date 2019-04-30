@@ -499,6 +499,64 @@ aws ec2 modify-volume --volume-id vol-0esdf88weg --size 12
 
 aws ec2 describe-volumes-modifications --volume-id vol-0esdf88weg
 
-Increase Ec3 root volume withour reboot or downtime website Link
+Increase Ec2 root volume withour reboot or downtime website Link
 
 https://www.youtube.com/watch?v=3SMn0zUmkyE
+
+
+EC2 Key pair change or recover commands
+
+lsblk
+
+mkdir -p /Binary
+mount -o nouuid /dev/xvdf2 /Binary
+
+cat /home/ec2-user/.ssh/authorized_keys >> /home/ec2-user/.ssh/authorized_keys 
+
+umount /Binary
+
+
+detach volume 
+
+=================================
+
+attech detach volume  between linux & windows ec2 instances
+
+===============================
+
+
+
+
+https://www.youtube.com/watch?v=zJYjh_r00zA
+
+reduce and extend logical volume for ec2 
+
+
+
+=========================================
+
+Nexus  pom.xml 
+
+
+vi pom.xml
+
+
+<project>
+...
+...
+...
+
+<distributionMangement>
+
+
+<repository>
+<id>releases<id/>
+<name>Releases</name>
+<url>http://10.200.0.16:8081/nexus/content/repositories/releases/</url>
+</repository>
+
+<snapshotRepository>
+<id>snapshots</id>
+<name>Snapshots</name>
+<url>http://10.200.0.16:8081/nexus/content/repositories/releases/</url>
+</snapshotRepository>
